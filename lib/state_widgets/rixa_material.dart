@@ -134,19 +134,52 @@ class _RixaMaterialState extends State<RixaMaterial> {
                     children: page.children, route: page.route, main: page),
               )
             else if (page is NestedPage)
-              ShellRoute(
-                builder: (context, state, widget) {
-                  return page.builder(
-                      context,
-                      RouteProperties(
-                          route: state.location,
-                          name: "",
-                          params: state.params),
-                      widget);
-                },
-                routes:
-                    getRoutes(children: page.children, route: "", main: null),
-              )
+              for (var nestedChildPage in page.children) ...[
+                GoRoute(
+                  path: nestedChildPage.route,
+                  name: nestedChildPage.name,
+                  redirect: (context, state) => nestedChildPage.redirectRoute(
+                      state.params, state.location),
+                  pageBuilder: (context, state) {
+                    if (state.location.split("/").length ==
+                        nestedChildPage.fullRoute.split("/").length) {
+                      Get.find<PageManager>().initRoute(
+                          params: state.params,
+                          context: context,
+                          route: paramsConverter(
+                              path: nestedChildPage.route,
+                              params: state.params),
+                          mainPage: nestedChildPage,
+                          currentPage: nestedChildPage);
+                    }
+                    return CustomTransitionPage<void>(
+                      key: state.pageKey,
+                      child: nestedChildPage.builder != null
+                          ? RixaNestedPageViewer(
+                              nestedPage: page,
+                              rixaPage: nestedChildPage,
+                              path: nestedChildPage.route,
+                            )
+                          : Material(
+                              child: Placeholder(
+                                child: Center(
+                                    child: Text(
+                                  "RixaPage named {${nestedChildPage.name}} doesn't have any builder!",
+                                  style: Rixa.appFonts.M(color: Colors.blue),
+                                )),
+                              ),
+                            ),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) =>
+                              FadeTransition(opacity: animation, child: child),
+                    );
+                  },
+                  routes: getRoutes(
+                      children: nestedChildPage.children,
+                      route: nestedChildPage.route,
+                      main: nestedChildPage),
+                ),
+              ]
         ],
         errorPageBuilder: (context, state) {
           Get.find<PageManager>()
@@ -161,6 +194,83 @@ class _RixaMaterialState extends State<RixaMaterial> {
           );
         },
       );
+      //router = GoRouter(
+      //  initialLocation: Get.find<PageManager>().initialRoute,
+      //  routes: [
+      //    for (var page in Get.find<PageManager>().pages)
+      //      if (page is RixaPage)
+      //        GoRoute(
+      //          path: page.route,
+      //          name: page.name,
+      //          redirect: (context, state) =>
+      //              page.redirectRoute(state.params, state.location),
+      //          pageBuilder: (context, state) {
+      //            if (state.location.split("/").length ==
+      //                page.fullRoute.split("/").length) {
+      //              Get.find<PageManager>().initRoute(
+      //                  params: state.params,
+      //                  context: context,
+      //                  route: paramsConverter(
+      //                      path: page.route, params: state.params),
+      //                  mainPage: page,
+      //                  currentPage: page);
+      //            }
+      //            return CustomTransitionPage<void>(
+      //              key: state.pageKey,
+      //              child: page.builder != null
+      //                  ? page.builder!(
+      //                      context,
+      //                      RouteProperties(
+      //                          route: paramsConverter(
+      //                              path: page.route, params: state.params),
+      //                          name: page.name,
+      //                          params: state.params))
+      //                  : Material(
+      //                      child: Placeholder(
+      //                        child: Center(
+      //                            child: Text(
+      //                          "RixaPage named {${page.name}} doesn't have any builder!",
+      //                          style: Rixa.appFonts.M(color: Colors.blue),
+      //                        )),
+      //                      ),
+      //                    ),
+      //              transitionsBuilder:
+      //                  (context, animation, secondaryAnimation, child) =>
+      //                      FadeTransition(opacity: animation, child: child),
+      //            );
+      //          },
+      //          routes: getRoutes(
+      //              children: page.children, route: page.route, main: page),
+      //        )
+      //      else if (page is NestedPage)
+      //        ShellRoute(
+      //          builder: (context, state, widget) {
+      //            return page.builder(
+      //                context,
+      //                RouteProperties(
+      //                    route: state.location,
+      //                    name: "",
+      //                    params: state.params),
+      //                widget);
+      //          },
+      //          routes:
+      //              getRoutes(children: page.children, route: "", main: null),
+      //        )
+      //  ],
+      //  errorPageBuilder: (context, state) {
+      //    Get.find<PageManager>()
+      //        .initErrorPage(route: state.location, params: state.params);
+      //    return CustomTransitionPage<void>(
+      //      key: state.pageKey,
+      //      child: Get.find<PageManager>().unknownRoutePage ??
+      //          const UnknownRoutePage(),
+      //      transitionsBuilder:
+      //          (context, animation, secondaryAnimation, child) =>
+      //              FadeTransition(opacity: animation, child: child),
+      //    );
+      //  },
+      //);
+
       //getPages = [
       //  GetPage(
       //    name: "/404",
@@ -295,6 +405,7 @@ class _RixaMaterialState extends State<RixaMaterial> {
             redirect: (context, state) =>
                 child.redirectRoute(state.params, state.location),
             pageBuilder: (context, state) {
+              NestedPage? nestedPage = child.firstNestedParent;
               if (state.location.split("/").length ==
                   child.fullRoute.split("/").length) {
                 Get.find<PageManager>().initRoute(
@@ -307,24 +418,30 @@ class _RixaMaterialState extends State<RixaMaterial> {
               }
               return CustomTransitionPage<void>(
                 key: state.pageKey,
-                child: child.builder != null
-                    ? child.builder!(
-                        context,
-                        RouteProperties(
-                            route: paramsConverter(
-                                path: route + child.route,
-                                params: state.params),
-                            name: child.name,
-                            params: state.params))
-                    : Material(
-                        child: Placeholder(
-                          child: Center(
-                              child: Text(
-                            "RixaPage named {${child.name}} doesn't have any builder!",
-                            style: Rixa.appFonts.M(color: Colors.blue),
-                          )),
-                        ),
-                      ),
+                child: nestedPage != null
+                    ? RixaNestedPageViewer(
+                        nestedPage: nestedPage,
+                        rixaPage: child,
+                        path: route + child.route,
+                      )
+                    : child.builder != null
+                        ? child.builder!(
+                            context,
+                            RouteProperties(
+                                route: paramsConverter(
+                                    path: route + child.route,
+                                    params: state.params),
+                                name: child.name,
+                                params: state.params))
+                        : Material(
+                            child: Placeholder(
+                              child: Center(
+                                  child: Text(
+                                "RixaPage named {${child.name}} doesn't have any builder!",
+                                style: Rixa.appFonts.M(color: Colors.blue),
+                              )),
+                            ),
+                          ),
                 transitionsBuilder:
                     (context, animation, secondaryAnimation, child) =>
                         FadeTransition(opacity: animation, child: child),
@@ -336,16 +453,54 @@ class _RixaMaterialState extends State<RixaMaterial> {
                 main: main ?? child),
           )
         else if (child is NestedPage)
-          ShellRoute(
-            builder: (context, state, widget) {
-              return child.builder(
-                  context,
-                  RouteProperties(route: route, name: "", params: state.params),
-                  widget);
-            },
-            routes:
-                getRoutes(children: child.children, route: route, main: main),
-          )
+          for (var nestedChildPage in child.children) ...[
+            GoRoute(
+              path: main == null
+                  ? nestedChildPage.route
+                  : nestedChildPage.route.replaceFirst("/", ""),
+              name: nestedChildPage.name,
+              redirect: (context, state) =>
+                  nestedChildPage.redirectRoute(state.params, state.location),
+              pageBuilder: (context, state) {
+                if (state.location.split("/").length ==
+                    nestedChildPage.fullRoute.split("/").length) {
+                  Get.find<PageManager>().initRoute(
+                      params: state.params,
+                      context: context,
+                      route: paramsConverter(
+                          path: route + nestedChildPage.route,
+                          params: state.params),
+                      mainPage: main ?? nestedChildPage,
+                      currentPage: nestedChildPage);
+                }
+                return CustomTransitionPage<void>(
+                  key: state.pageKey,
+                  child: nestedChildPage.builder != null
+                      ? RixaNestedPageViewer(
+                          nestedPage: child,
+                          rixaPage: nestedChildPage,
+                          path: route + nestedChildPage.route,
+                        )
+                      : Material(
+                          child: Placeholder(
+                            child: Center(
+                                child: Text(
+                              "RixaPage named {${nestedChildPage.name}} doesn't have any builder!",
+                              style: Rixa.appFonts.M(color: Colors.blue),
+                            )),
+                          ),
+                        ),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) =>
+                          FadeTransition(opacity: animation, child: child),
+                );
+              },
+              routes: getRoutes(
+                  children: nestedChildPage.children,
+                  route: nestedChildPage.route,
+                  main: nestedChildPage),
+            ),
+          ]
     ];
   }
 

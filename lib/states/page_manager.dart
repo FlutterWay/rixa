@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -9,8 +11,6 @@ import 'package:rixa/models/page_base.dart';
 import 'package:rixa/models/route_properties.dart';
 import 'package:rixa/rixa.dart';
 import 'package:go_router/go_router.dart';
-import 'package:go_router/go_router.dart' as go_router;
-
 import '../models/font_size.dart';
 
 class PageManager extends GetxController {
@@ -63,7 +63,11 @@ class PageManager extends GetxController {
       Map<String, String?>? params}) {
     _route =
         RouteProperties(route: route, name: currentPage.name, params: params);
+    if (pageQue.isNotEmpty && pageQue.last.route == route) {
+      pageQue.removeLast();
+    }
     _currentPage = currentPage;
+
     if (kIsWeb && currentPage.description != null) {
       FutureOr<String?> func = currentPage.description!(_route!);
       if (func is Future<String?>) {
@@ -347,7 +351,7 @@ class PageManager extends GetxController {
       if (quickDispose != null) {
         await quickDispose();
       }
-      GoRouterHelper(context).goNamed(name);
+      GoRouter.of(context).goNamed(name);
       //if (kIsWeb) {
       //} else {
       //  Get.rootDelegate.toNamed(searchPage(name)!.fullRoute);
@@ -357,7 +361,7 @@ class PageManager extends GetxController {
 
   Future<void> go({
     required String route,
-    dynamic item,
+    Map<String, dynamic>? item,
     dynamic Function()? quickDispose,
     required BuildContext context,
   }) async {
@@ -367,7 +371,7 @@ class PageManager extends GetxController {
       if (quickDispose != null) {
         await quickDispose();
       }
-      GoRouterHelper(context).go(route);
+      GoRouter.of(context).go(route);
       //if (kIsWeb) {
       //} else {
       //  Get.rootDelegate.toNamed(route);
@@ -375,11 +379,74 @@ class PageManager extends GetxController {
     }
   }
 
-  Future<bool> back(
-      {required BuildContext context, dynamic Function()? quickDispose}) async {
+  Future<void> push({
+    required String route,
+    Map<String, dynamic>? item,
+    dynamic Function()? onPop,
+    required BuildContext context,
+  }) async {
+    if (_route != null) {
+      _deliveringItem = item;
+      pageQue.add(_route!);
+      await GoRouter.of(context).push(route);
+      if (onPop != null) onPop();
+    }
+  }
+
+  Future<void> pushNamed({
+    required String name,
+    Map<String, dynamic>? item,
+    dynamic Function()? onPop,
+    required BuildContext context,
+  }) async {
+    if (_route != null) {
+      _deliveringItem = item;
+      pageQue.add(_route!);
+      await GoRouter.of(context).pushNamed(name);
+      if (onPop != null) onPop();
+    }
+  }
+
+  void pushReplacement({
+    required String route,
+    Map<String, dynamic>? item,
+    required BuildContext context,
+  }) {
+    if (_route != null) {
+      _deliveringItem = item;
+      pageQue.add(_route!);
+      GoRouter.of(context).pushReplacement(route);
+    }
+  }
+
+  void pushReplacementNamed({
+    required String name,
+    Map<String, dynamic>? item,
+    required BuildContext context,
+  }) {
+    if (_route != null) {
+      _deliveringItem = item;
+      pageQue.add(_route!);
+      GoRouter.of(context).pushReplacementNamed(name);
+    }
+  }
+
+  void pop(BuildContext context) async {
+    GoRouter.of(context).pop();
+  }
+
+  bool canPop(BuildContext context) {
+    return GoRouter.of(context).canPop();
+  }
+
+  Future<bool> goToPreviousPage(
+      {required BuildContext context,
+      Map<String, dynamic>? item,
+      dynamic Function()? quickDispose}) async {
     if (pageQue.isNotEmpty) {
+      _deliveringItem = item;
       _route = pageQue.removeLast();
-      Navigator.pop(context);
+      GoRouter.of(context).go(_route!.route!);
       return false;
     } else {
       return true;

@@ -10,12 +10,23 @@
 - [Installing](#installing)
 - [Basic Setup](#basic-setup)
 - [Page Management](#page-management)
+  - [Window Title on Web](#window-title-on-web)
   - [NestedPage](#nestedpage)
     - [Architecture](#architecture)
     - [MyNestedPage](#mynestedpage)
-  - [Change Page](#change-page)
+  - [Fixed GoRouter Issiues](#fixed-gorouter-issiues)
+    - [ShellRoute](#shellroute)
+    - [Back Button Problem on Mobile App](#back-button-problem-on-mobile-app)
+  - [Navigation](#navigation)
     - [go](#go)
     - [goNamed](#gonamed)
+    - [push](#push)
+    - [pushNamed](#pushnamed)
+    - [pushReplacement](#pushreplacement)
+    - [pushReplacementNamed](#pushreplacementnamed)
+    - [goToPreviousPage](#gotopreviouspage)
+    - [pop](#pop)
+    - [canPop](#canpop)
   - [AppFonts](#appfonts)
     - [Pre-defined Fonts](#pre-defined-fonts)
     - [Pre-defined Text Styles](#pre-defined-text-styles)
@@ -47,13 +58,16 @@
 
 Rixa is the easiest and simplest way to design your application.<br/> Creating the application skeleton could be tough and time taking. It can cause unnecessary time waste and struggle. After completing the simple steps below, you can use this skeleton we've prepared for yo. Work on a single project to create your multi-platform app instead of separating your project for any specific platform. We have also prepared a lot of widgets that will come handy to make your job easier.
 
+To learn more about Rixa, please visit the [FlutterWay web site](https://www.flutterway.net/)
+
 # Features
 
 Very simple page/route system to understand.<br/>
 Writing the same textstyle again and again could become a boring task, you will have an access to your own textstyle. They can be customised for each page if you want <br/>
 You will be able to access these features easily from anywhere in the application.<br/>  
-- Page/Route management
+- Page/Route management (Based on GoRouter but fixed its issues)
 - Manage fonts of your pages
+- Easy & Clean Navigation
 - Text styles and Icon sizes adjusted(static/dynamic) according to screen sizes
 - Manage appearances&languages of your application(language and appearance information is held in cache memory. you do not need to make any special settings for this).
 - Adjustable custom settings 
@@ -136,6 +150,7 @@ That's it! You can fetch your defined fonts and rest of the rixa `properties` an
 
 # Page Management
 
+Rixa uses `go_router` for route management in the background.  
 
 - Define your pages
 
@@ -227,8 +242,45 @@ void main() async {
 
 ```
 
+## Window Title on Web
+Set the description parameter to change the page-specific window title. 
+
+<img src="https://raw.githubusercontent.com/FlutterWay/files/main/rixa-window-title.gif"> 
+
+```dart
+  AppPages appPages = AppPages(
+      pages: [
+        RixaPage(
+            name: "page1",
+            fonts: PageFonts(text_small: 15),
+            builder: (context, properties) => const Page1(),
+            description: (properties) => "page1",
+            route: "/page1"),
+        RixaPage(
+            name: "page2",
+            fonts: PageFonts(text_small: 15),
+            builder: (context, properties) => const Page2(),
+            description: (properties) => "page2",
+            route: "/page2"),
+        RixaPage(
+            name: "login",
+            builder: (context, properties) => const LoginPage(),
+            description: (properties) => "login",
+            redirect: (properties) => isUserSignedIn?"/":null,
+            route: "/login"),
+        RixaPage(
+          name: "home",
+          route: "/",
+        )
+      ],
+      initialRoute: "/",
+    );
+```
+
 ## NestedPage
-If there is a common(stationary widgets) area used by a certain group of pages, you can make use of nestedPage
+If there is a common(stationary widgets) area used by a certain group of pages, you can make use of NestedPage<br><br/>
+Not: Rixa does not use go_router's ShellRoute for the Nested Page structure. ShellRoute has the problem of not being visible when pushed from outside. Therefore, rixa uses its own structure for NestedPage.<br><br/>
+for more: [#111842](https://github.com/flutter/flutter/issues/111842)
 
 ### Architecture
 ```dart
@@ -304,29 +356,151 @@ class _MyNestedPageState extends State<MyNestedPage> {
   }
 }
 ```
-## Change Page
-You have two ways to switch between pages
+## Fixed GoRouter Issiues
+
+### ShellRoute
+Rixa does not use go_router's ShellRoute for the Nested Page structure. ShellRoute has the problem of not being visible when pushed from outside. Therefore, rixa uses its own structure for NestedPage.<br><br/>
+for more: [#111842](https://github.com/flutter/flutter/issues/111842)
+
+### Back Button Problem on Mobile App
+
+If you run your application on a platform other than the web and use context.go(), Android&Ios back button or Navigator.pop() will not go to the previous page. You can use goToPreviousPage instead of Navigator.pop(). If you are using go() or goNamed() for navigation, add onWillPop to your scaffold and add this function. 
+
+[See the codes](#gotopreviouspage)
+
+## Navigation
+
+You have several ways to switch between pages
+- Data transfer between pages 
+- You can run your dispose function before go()
+- The push function puts the pushed page at the top of the page stack. You can specify the function that will run if you return from the pushed page
+
+for more: [Flutter Navigation with GoRouter: Go vs Push](https://codewithandrea.com/articles/flutter-navigation-gorouter-go-vs-push/)
+
 
 ### go
+
+-via PageState:
+```dart
+   Rixa.pageManager.go(
+    route: "/page1",
+    context: context,
+    quickDispose: () {
+      disposeFunction();
+    });
+```
+
 -via BuildContext:
 ```dart
    context.go(route: route); //Provide the defined name of the target page
 ```
 
+### goNamed
+
 -via PageState:
 ```dart
-   Rixa.pageManager.go(route: route,context:context); //Provide the defined name of the target page
+   Rixa.pageManager.goNamed(name: "page1"); //Provide the defined name of the target page
 ```
 
-### goNamed
 -via BuildContext:
 ```dart
-   context.goNamed(name: pageName); //Provide the defined name of the target page
+   context.goNamed(name: "page1"); //Provide the defined name of the target page
+```
+
+### push
+
+-via PageState:
+```dart
+   Rixa.pageManager.push(route: "/page1",context:context); //Provide the defined name of the target page
+```
+
+-via BuildContext:
+```dart
+  context.push(
+    route: "/page1",
+    onPop: () {
+      print("RETURNED TO LOGIN PAGE");
+      setState(() {});
+  }); //Provide the defined name of the target page
+```
+
+### pushNamed
+
+-via PageState:
+```dart
+   Rixa.pageManager.pushNamed(name: "page1",context:context); //Provide the defined name of the target page
+```
+
+-via BuildContext:
+```dart
+  context.pushNamed(name: "page1"); //Provide the defined name of the target page
+```
+
+### pushReplacement
+
+-via PageState:
+```dart
+   Rixa.pageManager.pushReplacement(route: "/page1",context:context); //Provide the defined name of the target page
+```
+
+-via BuildContext:
+```dart
+  context.pushReplacement(route: "/page1"); //Provide the defined name of the target page
+```
+
+### pushReplacementNamed
+
+-via PageState:
+```dart
+   Rixa.pageManager.pushReplacementNamed(name: "page1",context:context); //Provide the defined name of the target page
+```
+
+-via BuildContext:
+```dart
+  context.pushReplacementNamed(name: "page1"); //Provide the defined name of the target page
+```
+
+### goToPreviousPage
+
+If you run your application on a platform other than the web and use context.go(), Navigator.pop() will not go to the previous page. You can use goToPreviousPage instead of Navigator.pop(). If you are using go() or goNamed() for navigation, add onWillPop to your scaffold and add this function. 
+
+```dart
+   WillPopScope(
+      onWillPop: () async {
+        return (await context.goToPreviousPage());
+      },
+      child: Scaffold(
 ```
 
 -via PageState:
 ```dart
-   Rixa.pageManager.go(name: pageName,context:context); //Provide the defined name of the target page
+   Rixa.pageManager.goToPreviousPage(context:context); 
+```
+
+-via BuildContext:
+```dart
+  context.goToPreviousPage(); 
+```
+
+### pop
+
+Pop the top-most route off the current screen.
+
+-via PageState:
+```dart
+   Rixa.pageManager.pop(context:context); 
+```
+
+-via BuildContext:
+```dart
+  context.pop(); 
+```
+
+### canPop
+
+```dart
+  Rixa.pageManager.canPop(context:context); 
+  context.canPop(); 
 ```
 
 ## AppFonts
@@ -339,6 +513,7 @@ void main() {
       pages: appPages, languages: languages, appearances: appearances, staticFonts:true);
 }
 ```
+
 ### Pre-defined Fonts
 
 ### Pre-defined Text Styles
@@ -744,8 +919,8 @@ Text(
 |      Widgets      |     Functions     |           Extensions         |
 | -------------     |:-----------------:|:----------------------------:|
 | CheckBox          | cropImage         | inCaps(String)               |
-| CheckBoxList      | rixaDialog        | allInCaps(String)            |
-| ChildExpanded     |                   | allInCaps(String)            |
+| CheckBoxList      | Rixa.openDialog   | allInCaps(String)            |
+| ChildExpanded     | Rixa.pickFile     | allInCaps(String)            |
 | CropImage         |                   | capitalizeFirstofEach(String)|
 | DownloadButton    |                   | capitalize()(String)         |
 | DropDown          |                   | go(route)(BuildContext)      |

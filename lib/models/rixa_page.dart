@@ -9,6 +9,7 @@ import '../functions/functions.dart';
 class RixaPage extends PageBase {
   final String _name;
   final String _route;
+  final GlobalKey<NavigatorState>? _parentNavigatorKey;
   final Widget Function(BuildContext context, RouteProperties properties)?
       _builder;
   final Map<String, String>? _params;
@@ -20,6 +21,7 @@ class RixaPage extends PageBase {
 
   String get name => _name;
   String get route => _route;
+  GlobalKey<NavigatorState>? get parentNavigatorKey => _parentNavigatorKey;
   FutureOr<String> Function(RouteProperties properties)? get description =>
       _description;
   Widget Function(BuildContext context, RouteProperties properties)?
@@ -87,6 +89,7 @@ class RixaPage extends PageBase {
 
   RixaPage({
     required String name,
+    GlobalKey<NavigatorState>? parentNavigatorKey,
     String? route,
     FutureOr<String> Function(RouteProperties properties)? description,
     Widget Function(BuildContext context, RouteProperties properties)? builder,
@@ -101,6 +104,7 @@ class RixaPage extends PageBase {
         _builder = builder,
         _redirect = redirect,
         _description = description,
+        _parentNavigatorKey = parentNavigatorKey,
         _redirectedChild = redirectedChild,
         _params = params,
         _title = title,

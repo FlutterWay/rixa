@@ -78,4 +78,12 @@
 ## 0.2.7
 
 * unnecessary dependency has been removed
+  
+## 0.3.0
+
+* push, pushNamed, pushReplacement and pushReplacementNamed added
+* navigator key paramaters added to RixaPage and NestedPage
+* fixed appwidth issue in RixaProperties
+* context.goToPreviousPage() added 
+* Fixed NestedPage not showing up when pushed from outside
 

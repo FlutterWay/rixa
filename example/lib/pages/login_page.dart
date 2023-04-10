@@ -41,7 +41,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextButton(
                   onPressed: () async {
-                    context.go(route: "/page1");
+                    context.go(
+                      route: "/page1",
+                    );
                   },
                   child: Container(
                     width: iconW,

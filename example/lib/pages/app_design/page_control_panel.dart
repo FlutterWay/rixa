@@ -33,26 +33,31 @@ class _MyNestedPageState extends State<MyNestedPage> {
   @override
   Widget build(BuildContext context) {
     return RixaBuilder(builder: (properties, fonts) {
-      return Scaffold(
-          backgroundColor: Rixa.appColors.backgroundColor,
-          // ignore: prefer_const_constructors
-          appBar: MyAppbar(),
-          drawer: properties.anyMobile ? MyDrawer() : null,
-          body: Row(
-            children: [
-              if (!properties.anyMobile)
-                SizedBox(
-                  height: double.infinity,
-                  width: properties.screenMode == ScreenMode.desktopLarge
-                      ? 200
-                      : 70,
-                  child: LeftMenu(),
+      return WillPopScope(
+        onWillPop: () async {
+          return kIsWeb ? false : (await context.goToPreviousPage());
+        },
+        child: Scaffold(
+            backgroundColor: Rixa.appColors.backgroundColor,
+            // ignore: prefer_const_constructors
+            appBar: MyAppbar(),
+            drawer: properties.anyMobile ? MyDrawer() : null,
+            body: Row(
+              children: [
+                if (!properties.anyMobile)
+                  SizedBox(
+                    height: double.infinity,
+                    width: properties.screenMode == ScreenMode.desktopLarge
+                        ? 200
+                        : 70,
+                    child: LeftMenu(),
+                  ),
+                Expanded(
+                  child: widget.child,
                 ),
-              Expanded(
-                child: widget.child,
-              ),
-            ],
-          ));
+              ],
+            )),
+      );
     });
   }
 }
