@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +17,7 @@ class PageManager extends GetxController {
   RixaPage? _mainPage;
   RixaPage? _currentPage;
   List<RouteProperties> pageQue = [];
-  Widget? _unknownRoutePage;
+  UnknownRoutePage? _unknownRoutePage;
   late ScreenModeLimits defaultLimits;
   Map<String, dynamic>? _deliveringItem;
   late final String _initialRoute;
@@ -28,7 +27,7 @@ class PageManager extends GetxController {
 
   RouteProperties? _route;
 
-  Widget? get unknownRoutePage => _unknownRoutePage;
+  UnknownRoutePage? get unknownRoutePage => _unknownRoutePage;
 
   RouteProperties? get route => _route;
   RixaPage? get currentPage => _currentPage;
@@ -95,10 +94,28 @@ class PageManager extends GetxController {
   }
 
   void initErrorPage(
-      {required String? route, required Map<String, String?>? params}) {
+      {required String? route,
+      required Map<String, String?>? params,
+      required BuildContext context}) {
     //routedPageCounts++;
     _currentPage = null;
     _route = RouteProperties(route: route, name: null, params: params);
+    if (kIsWeb &&
+        _unknownRoutePage != null &&
+        _unknownRoutePage!.description != null) {
+      FutureOr<String?> func = _unknownRoutePage!.description!(_route!);
+      if (func is Future<String?>) {
+        func.then((value) {
+          if (_currentPage == currentPage && value != null) {
+            _updatePageDescription(value, context);
+          }
+        });
+      } else {
+        if (func != null) {
+          _updatePageDescription(func, context);
+        }
+      }
+    }
   }
 
   set setAppPages(AppPages pages) {

@@ -82,8 +82,14 @@
 ## 0.3.0
 
 * push, pushNamed, pushReplacement and pushReplacementNamed added
-* navigator key paramaters added to RixaPage and NestedPage
-* fixed appwidth issue in RixaProperties
+* Fixed GoRouter Issiues
+* Navigator key paramaters added to RixaPage and NestedPage
+* Fixed appwidth issue in RixaProperties
 * context.goToPreviousPage() added 
 * Fixed NestedPage not showing up when pushed from outside
+* Page transition feature added
+* UnknownRoutePage class added
+* Web window title added
+* Rixa.cropImage, Rixa.openDialog, Rixa.pickFile added
+* Documentation updated
 

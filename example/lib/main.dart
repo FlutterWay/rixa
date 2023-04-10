@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rixa/rixa.dart';
 import 'package:rixa_example/pages/page2.dart';
+import 'pages/app_design/error_screen.dart';
 import 'pages/widgets.dart';
 import '/pages/login_page.dart';
 import '/pages/page1.dart';
@@ -22,10 +23,22 @@ void main() async {
             builder: (context, properties, child) => MyNestedPage(child: child),
             children: [
               RixaPage(
-                  name: "page1",
-                  builder: (context, properties) => const Page1(),
-                  description: (properties) => "page1",
-                  route: "/page1"),
+                name: "page1",
+                route: "/page1",
+                builder: (context, properties) => const Page1(),
+                description: (properties) => "page1",
+                pageTransition: PageTransition(
+                  transitionDuration: const Duration(milliseconds: 300),
+                  reverseTransitionDuration: const Duration(milliseconds: 300),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) =>
+                          FadeTransition(
+                    opacity: CurveTween(curve: Curves.easeInOutCirc)
+                        .animate(animation),
+                    child: child,
+                  ),
+                ),
+              ),
               RixaPage(
                   name: "page2",
                   route: "/page2",
@@ -67,6 +80,7 @@ void main() async {
         )
       ],
       initialRoute: "/login",
+      unknownRoutePage: UnknownRoutePage(pageView: const ErrorPage()),
     ),
     languages: AppLanguages(
       languages: ["English", "Turkish"],

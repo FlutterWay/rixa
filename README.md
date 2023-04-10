@@ -1,5 +1,3 @@
-
-
 <p align="center">
 <img src="https://raw.githubusercontent.com/FlutterWay/files/main/rixa_poster.png"> 
 <img src="https://raw.githubusercontent.com/FlutterWay/files/main/rixa-tanitim.gif"> 
@@ -10,16 +8,17 @@
 - [Installing](#installing)
 - [Basic Setup](#basic-setup)
 - [Page Management](#page-management)
-  - [Window Title on Web](#window-title-on-web)
+  - [Window Title for Web development](#window-title-for-web-development)
   - [NestedPage](#nestedpage)
     - [Architecture](#architecture)
     - [MyNestedPage](#mynestedpage)
-  - [Fixed GoRouter Issiues](#fixed-gorouter-issiues)
+  - [Page Transition](#page-transition)
+  - [Common Issue Fixed - GoRouter Issues Fixed](#common-issue-fixed---gorouter-issues-fixed)
     - [ShellRoute](#shellroute)
-    - [Back Button Problem on Mobile App](#back-button-problem-on-mobile-app)
-  - [Navigation](#navigation)
+    - [Common Issue Fixed - Back Button Problem on Mobile App](#common-issue-fixed---back-button-problem-on-mobile-app)
+  - [Navigation Methods](#navigation-methods)
     - [go](#go)
-    - [goNamed](#gonamed)
+    - [goName](#goname)
     - [push](#push)
     - [pushNamed](#pushnamed)
     - [pushReplacement](#pushreplacement)
@@ -51,23 +50,28 @@
     - [Other Features](#other-features)
   - [Example Design](#example-design)
 - [Customizable Features](#customizable-features)
+- [Some Of Useful Rixa Features](#some-of-useful-rixa-features)
+    - [openDialog - Open Alert Dialog](#opendialog---open-alert-dialog)
+    - [pickFile - Pick a File](#pickfile---pick-a-file)
+    - [cropImage - Crop an Image File](#cropimage---crop-an-image-file)
+    - [Emoji Gif Picker](#emoji-gif-picker)
 - [Widgets, Functions, Extensions](#widgets-functions-extensions)
   - [To Contribute](#to-contribute)
   
 # About Rixa
 
-Rixa is the easiest and simplest way to design your application.<br/> Creating the application skeleton could be tough and time taking. It can cause unnecessary time waste and struggle. After completing the simple steps below, you can use this skeleton we've prepared for yo. Work on a single project to create your multi-platform app instead of separating your project for any specific platform. We have also prepared a lot of widgets that will come handy to make your job easier.
+Rixa is the easiest and simplest way to design your application.<br/> Creating the application skeleton could be tough and time taking. It can cause unnecessary time waste and struggle. After completing the simple steps below, you can use this skeleton we've prepared for yo. Work on a single project to create your multi-platform app instead of separating your project for any specific platform. We have also prepared a lot of widgets that will come handy and make your job way easier.
 
-To learn more about Rixa, please visit the [FlutterWay web site](https://www.flutterway.net/)
+To learn more about Rixa and many more, please visit the [FlutterWay web site](https://www.flutterway.net/)
 
 # Features
 
 Very simple page/route system to understand.<br/>
 Writing the same textstyle again and again could become a boring task, you will have an access to your own textstyle. They can be customised for each page if you want <br/>
 You will be able to access these features easily from anywhere in the application.<br/>  
-- Page/Route management (Based on GoRouter but fixed its issues)
+- Page/Route management (Based on GoRouter but fixed common issues developers experience)
 - Manage fonts of your pages
-- Easy & Clean Navigation
+- Simple & Effective Navigation
 - Text styles and Icon sizes adjusted(static/dynamic) according to screen sizes
 - Manage appearances&languages of your application(language and appearance information is held in cache memory. you do not need to make any special settings for this).
 - Adjustable custom settings 
@@ -150,7 +154,7 @@ That's it! You can fetch your defined fonts and rest of the rixa `properties` an
 
 # Page Management
 
-Rixa uses `go_router` for route management in the background.  
+Rixa uses `go_router` for its route management on the background.
 
 - Define your pages
 
@@ -242,7 +246,7 @@ void main() async {
 
 ```
 
-## Window Title on Web
+## Window Title for Web development
 Set the description parameter to change the page-specific window title. 
 
 <img src="https://raw.githubusercontent.com/FlutterWay/files/main/rixa-window-title.gif"> 
@@ -279,8 +283,8 @@ Set the description parameter to change the page-specific window title.
 
 ## NestedPage
 If there is a common(stationary widgets) area used by a certain group of pages, you can make use of NestedPage<br><br/>
-Not: Rixa does not use go_router's ShellRoute for the Nested Page structure. ShellRoute has the problem of not being visible when pushed from outside. Therefore, rixa uses its own structure for NestedPage.<br><br/>
-for more: [#111842](https://github.com/flutter/flutter/issues/111842)
+Note: Rixa does not use go_router's ShellRoute for the Nested Page structure. ShellRoute has the problem of not being visible when pushed from outside. Therefore, rixa uses its own structure for NestedPage.<br><br/> 
+for more information: [#111842](https://github.com/flutter/flutter/issues/111842)
 
 ### Architecture
 ```dart
@@ -356,26 +360,54 @@ class _MyNestedPageState extends State<MyNestedPage> {
   }
 }
 ```
-## Fixed GoRouter Issiues
+## Page Transition
+
+Rixa allows you to customize the transition animation for each RixaPage. To configure a custom transition animation, provide a pageTransition parameter to the RixaPage constructor.
+
+```dart
+RixaPage(
+  name: "page1",
+  route: "/page1",
+  builder: (context, properties) => const Page1(),
+  description: (properties) => "page1",
+  pageTransition: PageTransition(
+    transitionDuration: const Duration(milliseconds: 300),
+    reverseTransitionDuration: const Duration(milliseconds: 300),
+    transitionsBuilder:
+        (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+      opacity: CurveTween(curve: Curves.easeInOutCirc)
+          .animate(animation),
+      child: child,
+    ),
+  ),
+),
+```
+For a complete example, see the [transition animations sample](https://github.com/FlutterWay/rixa/tree/main/example/lib/transition_animations_sample).
+
+For more information on animations in Flutter, visit the [Animations](https://docs.flutter.dev/development/ui/animations) page on flutter.dev.
+
+## Common Issue Fixed - GoRouter Issues Fixed
 
 ### ShellRoute
+
 Rixa does not use go_router's ShellRoute for the Nested Page structure. ShellRoute has the problem of not being visible when pushed from outside. Therefore, rixa uses its own structure for NestedPage.<br><br/>
-for more: [#111842](https://github.com/flutter/flutter/issues/111842)
+for more information: [#111842](https://github.com/flutter/flutter/issues/111842)
 
-### Back Button Problem on Mobile App
+### Common Issue Fixed - Back Button Problem on Mobile App
 
-If you run your application on a platform other than the web and use context.go(), Android&Ios back button or Navigator.pop() will not go to the previous page. You can use goToPreviousPage instead of Navigator.pop(). If you are using go() or goNamed() for navigation, add onWillPop to your scaffold and add this function. 
+If you run your application on a platform other than the web and use context.go(), Android&Ios back button or Navigator.pop() will not functions as wanted and go to the previous page. You can use goToPreviousPage instead of Navigator.pop(). If you are using go() or goNamed() for navigation, add onWillPop to your scaffold then add this function. 
 
-[See the codes](#gotopreviouspage)
+[Check the codes](#gotopreviouspage)
 
-## Navigation
+## Navigation Methods
 
 You have several ways to switch between pages
 - Data transfer between pages 
-- You can run your dispose function before go()
+- You can run your own dispose function before go()
 - The push function puts the pushed page at the top of the page stack. You can specify the function that will run if you return from the pushed page
 
-for more: [Flutter Navigation with GoRouter: Go vs Push](https://codewithandrea.com/articles/flutter-navigation-gorouter-go-vs-push/)
+for more information: [Flutter Navigation with GoRouter: Go vs Push](https://codewithandrea.com/articles/flutter-navigation-gorouter-go-vs-push/)  
 
 
 ### go
@@ -395,7 +427,7 @@ for more: [Flutter Navigation with GoRouter: Go vs Push](https://codewithandrea.
    context.go(route: route); //Provide the defined name of the target page
 ```
 
-### goNamed
+### goName
 
 -via PageState:
 ```dart
@@ -517,6 +549,7 @@ void main() {
 ### Pre-defined Fonts
 
 ### Pre-defined Text Styles
+
 small textstyles: small1, small2, small3, small4, small5, small6, small7, small8, small9
 medium textstyles: medium1, medium2, medium3, medium4, medium5, medium6, medium7, medium8, medium9
 large textstyles: large1, large2, large3, large4, large5, large6, large7, large8, large9
@@ -525,6 +558,7 @@ xS()=>small3, S()=>small5, M()=>medium5, L()=>large5
 xL()=>large7, mega()=>mega5, giga()=>mega7 
 
 ### Pre-defined Icon Sizes
+
 small icon sizes: icon_small1, icon_small2, icon_small3, icon_small4, icon_small5, icon_small6, icon_small7, icon_small8, icon_small9
 medium icon sizes: icon_medium1, icon_medium2, icon_medium3, icon_medium4, icon_medium5, icon_medium6, icon_medium7, icon_medium8, icon_medium9
 large icon sizes: icon_large1, icon_large2, icon_large3, icon_large4, icon_large5, icon_large6, icon_large7, icon_large8, icon_large9
@@ -910,49 +944,74 @@ Text(
         name: "changeLeftMenuStatus");
 ```
 
+# Some Of Useful Rixa Features
+
+### openDialog - Open Alert Dialog
+
+```dart
+  Rixa.openDialog(child: MyDialogView(), context: context)
+```
+### pickFile - Pick a File
+
+```dart
+  List<PlatformFile>? files=await Rixa.pickFile();
+```
+### cropImage - Crop an Image File
+
+```dart
+  Rixa.cropImage(context: context, mainImage: imageData);
+```
+### Emoji Gif Picker
+
+[![pub package](https://img.shields.io/pub/v/flutter_emoji_gif_picker.svg?label=flutter_emoji_gif_picker&color=blue)](https://pub.dev/packages/flutter_emoji_gif_picker)
+
+flutter_emoji_gif_picker is found auto-installed in rixa. You dont need to EmojiGifPickerPanel.setup() in the main function. If you still want to change the design of the emoji gif picker, you will see the emojiGifPickerConfig parameter in the Rixa.setup function. [Learn how to use it](https://www.flutterway.net/our-packages/pick-a-single-package/emoji-gif-picker)
 
 # Widgets, Functions, Extensions
 
+You can find a list of all widgets, functions, extensions of Rixa!
+
 <img width=800 src="https://raw.githubusercontent.com/worldwidee/files/main/widgets.gif"> 
 
+[Checkout the details of all widgets](https://rixa/widgets)
 
-|      Widgets      |     Functions     |           Extensions         |
-| -------------     |:-----------------:|:----------------------------:|
-| CheckBox          | cropImage         | inCaps(String)               |
-| CheckBoxList      | Rixa.openDialog   | allInCaps(String)            |
-| ChildExpanded     | Rixa.pickFile     | allInCaps(String)            |
-| CropImage         |                   | capitalizeFirstofEach(String)|
-| DownloadButton    |                   | capitalize()(String)         |
-| DropDown          |                   | go(route)(BuildContext)      |
-| ExpandedContainer |                   | goNamed(name)(BuildContext)  |
-| ExpandedLine      |                   |                              |
-| ExpandedText      |                   |                              |
-| ExpandedWidget    |                   |                              |
-| ExpandedButton    |                   |                              |
-| FileIcon          |                   |                              |
-| FileType          |                   |                              |
-| GlassMorphism     |                   |                              |
-| IconOfFile        |                   |                              |
-| ImageAvatar       |                   |                              |
-| InfContainer      |                   |                              |
-| InfiniteText      |                   |                              |
-| LineChart         |                   |                              |
-| LiquidLoadingBar  |                   |                              |
-| MiddleOfExpanded  |                   |                              |
-| OnHover           |                   |                              |
-| PasswordField     |                   |                              |
-| ProfileAvatar     |                   |                              |
-| RadioButtonList   |                   |                              |
-| RegionBar         |                   |                              |
-| SizedButton       |                   |                              |
-| RixaTextField     |                   |                              |
-| RixaTextFieldFull |                   |                              |
-| ChatTextField     |                   |                              |
-| ExpandedTextButton|                   |                              |
-| SmartPlayer       |                   |                              |
-| VideoPlayerMobile |                   |                              |
-| VideoPlayerDesktop|                   |                              |
-| MarkdownWidget    |                   |                              |
+| Widgets            |    Functions    |          Extensions           |
+| ------------------ | :-------------: | :---------------------------: |
+| CheckBox           |    cropImage    |        inCaps(String)         |
+| CheckBoxList       | Rixa.openDialog |       allInCaps(String)       |
+| ChildExpanded      |  Rixa.pickFile  |       allInCaps(String)       |
+| CropImage          |                 | capitalizeFirstofEach(String) |
+| DownloadButton     |                 |     capitalize()(String)      |
+| DropDown           |                 |    go(route)(BuildContext)    |
+| ExpandedContainer  |                 |  goNamed(name)(BuildContext)  |
+| ExpandedLine       |                 |                               |
+| ExpandedText       |                 |                               |
+| ExpandedWidget     |                 |                               |
+| ExpandedButton     |                 |                               |
+| FileIcon           |                 |                               |
+| FileType           |                 |                               |
+| GlassMorphism      |                 |                               |
+| IconOfFile         |                 |                               |
+| ImageAvatar        |                 |                               |
+| InfContainer       |                 |                               |
+| InfiniteText       |                 |                               |
+| LineChart          |                 |                               |
+| LiquidLoadingBar   |                 |                               |
+| MiddleOfExpanded   |                 |                               |
+| OnHover            |                 |                               |
+| PasswordField      |                 |                               |
+| ProfileAvatar      |                 |                               |
+| RadioButtonList    |                 |                               |
+| RegionBar          |                 |                               |
+| SizedButton        |                 |                               |
+| RixaTextField      |                 |                               |
+| RixaTextFieldFull  |                 |                               |
+| ChatTextField      |                 |                               |
+| ExpandedTextButton |                 |                               |
+| SmartPlayer        |                 |                               |
+| VideoPlayerMobile  |                 |                               |
+| VideoPlayerDesktop |                 |                               |
+| MarkdownWidget     |                 |                               |
 
 ## To Contribute
 * If you **found a bug** or **have a feature request**, open an issue.

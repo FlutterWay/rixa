@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rixa/rixa.dart';
 
-class UnknownRoutePage extends StatelessWidget {
-  const UnknownRoutePage({Key? key}) : super(key: key);
+class UnknownRoutePageView extends StatelessWidget {
+  const UnknownRoutePageView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

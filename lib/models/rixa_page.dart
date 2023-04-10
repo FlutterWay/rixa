@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rixa/models/page_base.dart';
 import 'package:rixa/models/route_properties.dart';
 import '../functions/functions.dart';
+import 'page_transition.dart';
 
 // ignore: must_be_immutable
 class RixaPage extends PageBase {
@@ -18,7 +19,7 @@ class RixaPage extends PageBase {
   final FutureOr<String?> Function(RouteProperties properties)?
       _redirectedChild;
   final FutureOr<String> Function(RouteProperties properties)? _description;
-
+  final PageTransition? _pageTransition;
   String get name => _name;
   String get route => _route;
   GlobalKey<NavigatorState>? get parentNavigatorKey => _parentNavigatorKey;
@@ -28,6 +29,7 @@ class RixaPage extends PageBase {
       get builder => _builder;
   Map<String, String>? get params => _params;
   String? get title => _title;
+  PageTransition? get pageTransition => _pageTransition;
 
   FutureOr<String?> Function(RouteProperties properties)? get redirect =>
       _redirect;
@@ -96,6 +98,7 @@ class RixaPage extends PageBase {
     FutureOr<String?> Function(RouteProperties properties)? redirect,
     FutureOr<String?> Function(RouteProperties properties)? redirectedChild,
     Map<String, String>? params,
+    PageTransition? pageTransition,
     String? title,
     super.children,
     super.screenModeLimits,
@@ -105,6 +108,7 @@ class RixaPage extends PageBase {
         _redirect = redirect,
         _description = description,
         _parentNavigatorKey = parentNavigatorKey,
+        _pageTransition = pageTransition,
         _redirectedChild = redirectedChild,
         _params = params,
         _title = title,

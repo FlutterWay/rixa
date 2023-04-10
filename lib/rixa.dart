@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'models/mode.dart';
 import 'models/rixa_properties.dart';
 import 'models/screen_mode_limits.dart';
+import 'models/unknown_route_page.dart';
 import 'states/app_colors.dart';
 import 'states/app_fonts.dart';
 import 'states/app_settings.dart';
@@ -39,6 +40,8 @@ export 'models/nested_page.dart';
 export 'models/device_type.dart';
 export 'models/rixa_page.dart';
 export 'models/page_fonts.dart';
+export 'models/unknown_route_page.dart';
+export 'models/page_transition.dart';
 export 'models/rixa_properties.dart';
 export 'models/screen_mode_limits.dart';
 export 'state_widgets/rixa_builder.dart';
@@ -301,7 +304,7 @@ class AppAppearances {
 
 class AppPages {
   List<PageBase> pages;
-  Widget? unknownRoutePage;
+  UnknownRoutePage? unknownRoutePage;
   String initialRoute;
 
   AppPages(

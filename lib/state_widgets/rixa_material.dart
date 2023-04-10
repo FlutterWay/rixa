@@ -6,7 +6,7 @@ import 'package:rixa/models/route_properties.dart';
 import 'package:rixa/state_widgets/rixa_page_viewer.dart';
 import '../functions/functions.dart';
 import '../rixa.dart';
-import 'unknown_route_page.dart';
+import 'unknown_route_page_view.dart';
 
 class RixaMaterial extends StatefulWidget {
   final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
@@ -125,9 +125,13 @@ class _RixaMaterialState extends State<RixaMaterial> {
                               )),
                             ),
                           ),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) =>
-                            FadeTransition(opacity: animation, child: child),
+                    transitionsBuilder: (context, animation, secondaryAnimation,
+                            child) =>
+                        page.pageTransition != null &&
+                                page.pageTransition!.transitionsBuilder != null
+                            ? page.pageTransition!.transitionsBuilder!(
+                                context, animation, secondaryAnimation, child)
+                            : FadeTransition(opacity: animation, child: child),
                   );
                 },
                 routes: getRoutes(
@@ -169,9 +173,17 @@ class _RixaMaterialState extends State<RixaMaterial> {
                                 )),
                               ),
                             ),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) =>
-                              FadeTransition(opacity: animation, child: child),
+                      transitionsBuilder: (context, animation,
+                              secondaryAnimation, child) =>
+                          nestedChildPage.pageTransition != null &&
+                                  nestedChildPage
+                                          .pageTransition!.transitionsBuilder !=
+                                      null
+                              ? nestedChildPage
+                                      .pageTransition!.transitionsBuilder!(
+                                  context, animation, secondaryAnimation, child)
+                              : FadeTransition(
+                                  opacity: animation, child: child),
                     );
                   },
                   routes: getRoutes(
@@ -182,15 +194,30 @@ class _RixaMaterialState extends State<RixaMaterial> {
               ]
         ],
         errorPageBuilder: (context, state) {
-          Get.find<PageManager>()
-              .initErrorPage(route: state.location, params: state.params);
+          Get.find<PageManager>().initErrorPage(
+              route: state.location, params: state.params, context: context);
           return CustomTransitionPage<void>(
             key: state.pageKey,
-            child: Get.find<PageManager>().unknownRoutePage ??
-                const UnknownRoutePage(),
+            child: Get.find<PageManager>().unknownRoutePage?.pageView ??
+                const UnknownRoutePageView(),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) =>
-                    FadeTransition(opacity: animation, child: child),
+                    Get.find<PageManager>().unknownRoutePage != null &&
+                            Get.find<PageManager>()
+                                    .unknownRoutePage!
+                                    .pageTransition !=
+                                null &&
+                            Get.find<PageManager>()
+                                    .unknownRoutePage!
+                                    .pageTransition!
+                                    .transitionsBuilder !=
+                                null
+                        ? Get.find<PageManager>()
+                                .unknownRoutePage!
+                                .pageTransition!
+                                .transitionsBuilder!(
+                            context, animation, secondaryAnimation, child)
+                        : FadeTransition(opacity: animation, child: child),
           );
         },
       );
@@ -442,9 +469,14 @@ class _RixaMaterialState extends State<RixaMaterial> {
                               )),
                             ),
                           ),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) =>
-                        FadeTransition(opacity: animation, child: child),
+                transitionsBuilder: (context, animation, secondaryAnimation,
+                        childWidget) =>
+                    child.pageTransition != null &&
+                            child.pageTransition!.transitionsBuilder != null
+                        ? child.pageTransition!.transitionsBuilder!(
+                            context, animation, secondaryAnimation, childWidget)
+                        : FadeTransition(
+                            opacity: animation, child: childWidget),
               );
             },
             routes: getRoutes(
@@ -490,9 +522,15 @@ class _RixaMaterialState extends State<RixaMaterial> {
                             )),
                           ),
                         ),
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) =>
-                          FadeTransition(opacity: animation, child: child),
+                  transitionsBuilder: (context, animation, secondaryAnimation,
+                          child) =>
+                      nestedChildPage.pageTransition != null &&
+                              nestedChildPage
+                                      .pageTransition!.transitionsBuilder !=
+                                  null
+                          ? nestedChildPage.pageTransition!.transitionsBuilder!(
+                              context, animation, secondaryAnimation, child)
+                          : FadeTransition(opacity: animation, child: child),
                 );
               },
               routes: getRoutes(
