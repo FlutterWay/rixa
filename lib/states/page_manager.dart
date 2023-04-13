@@ -25,7 +25,7 @@ class PageManager extends GetxController {
   //int routedPageCounts = 0;
 
   String get initialRoute => _initialRoute;
-
+  NavigationType? lastNavigationType;
   RouteProperties? _route;
 
   UnknownRoutePage? get unknownRoutePage => _unknownRoutePage;
@@ -365,10 +365,11 @@ class PageManager extends GetxController {
   }) async {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(QueRoute(route: _route!.route!, type: NavigationType.go));
+      pageQue.add(QueRoute(route: _route!.route!, type: lastNavigationType));
       if (quickDispose != null) {
         await quickDispose();
       }
+      lastNavigationType = NavigationType.go;
       GoRouter.of(context).goNamed(name);
       //if (kIsWeb) {
       //} else {
@@ -385,11 +386,12 @@ class PageManager extends GetxController {
   }) async {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(QueRoute(route: _route!.route!, type: NavigationType.go));
+      pageQue.add(QueRoute(route: _route!.route!, type: lastNavigationType));
       if (quickDispose != null) {
         await quickDispose();
       }
       GoRouter.of(context).go(route);
+      lastNavigationType = NavigationType.go;
       //if (kIsWeb) {
       //} else {
       //  Get.rootDelegate.toNamed(route);
@@ -405,7 +407,8 @@ class PageManager extends GetxController {
   }) async {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(QueRoute(route: _route!.route!, type: NavigationType.push));
+      pageQue.add(QueRoute(route: _route!.route!, type: lastNavigationType));
+      lastNavigationType = NavigationType.push;
       await GoRouter.of(context).push(route);
       if (onPop != null) onPop();
     }
@@ -419,7 +422,8 @@ class PageManager extends GetxController {
   }) async {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(QueRoute(route: _route!.route!, type: NavigationType.push));
+      pageQue.add(QueRoute(route: _route!.route!, type: lastNavigationType));
+      lastNavigationType = NavigationType.push;
       await GoRouter.of(context).pushNamed(name);
       if (onPop != null) onPop();
     }
@@ -432,8 +436,8 @@ class PageManager extends GetxController {
   }) {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(QueRoute(
-          route: _route!.route!, type: NavigationType.pushReplacement));
+      pageQue.add(QueRoute(route: _route!.route!, type: lastNavigationType));
+      lastNavigationType = NavigationType.pushReplacement;
       GoRouter.of(context).pushReplacement(route);
     }
   }
@@ -445,8 +449,8 @@ class PageManager extends GetxController {
   }) {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(QueRoute(
-          route: _route!.route!, type: NavigationType.pushReplacement));
+      pageQue.add(QueRoute(route: _route!.route!, type: lastNavigationType));
+      lastNavigationType = NavigationType.pushReplacement;
       GoRouter.of(context).pushReplacementNamed(name);
     }
   }
@@ -477,6 +481,9 @@ class PageManager extends GetxController {
           Navigator.pop(context, item);
           break;
         case NavigationType.pushReplacement:
+          Navigator.pop(context, item);
+          break;
+        case null:
           Navigator.pop(context, item);
           break;
       }

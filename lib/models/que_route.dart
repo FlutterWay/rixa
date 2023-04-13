@@ -2,6 +2,6 @@ enum NavigationType { go, push, pushReplacement }
 
 class QueRoute {
   String route;
-  NavigationType type;
+  NavigationType? type;
   QueRoute({required this.route, required this.type});
 }

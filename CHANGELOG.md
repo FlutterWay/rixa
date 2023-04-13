@@ -100,4 +100,8 @@
 ## 0.3.2
 
 * doc updated
+  
+## 0.3.3
+
+* doc updated
 
