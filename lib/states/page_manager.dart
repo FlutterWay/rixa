@@ -466,15 +466,18 @@ class PageManager extends GetxController {
     if (pageQue.isNotEmpty) {
       _deliveringItem = item;
       QueRoute queRoute = pageQue.removeLast();
+      if (quickDispose != null) {
+        await quickDispose();
+      }
       switch (queRoute.type) {
         case NavigationType.go:
           GoRouter.of(context).go(queRoute.route);
           break;
         case NavigationType.push:
-          GoRouter.of(context).pop(item);
+          Navigator.pop(context, item);
           break;
         case NavigationType.pushReplacement:
-          GoRouter.of(context).pop(item);
+          Navigator.pop(context, item);
           break;
       }
       return false;
