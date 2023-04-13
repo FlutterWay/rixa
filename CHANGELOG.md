@@ -104,4 +104,8 @@
 ## 0.3.3
 
 * doc updated
+  
+## 0.3.4
+
+* goToPreviousPage has been optimized
 

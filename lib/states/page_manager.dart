@@ -473,7 +473,7 @@ class PageManager extends GetxController {
       if (quickDispose != null) {
         await quickDispose();
       }
-      switch (queRoute.type) {
+      switch (lastNavigationType) {
         case NavigationType.go:
           GoRouter.of(context).go(queRoute.route);
           break;
@@ -487,6 +487,7 @@ class PageManager extends GetxController {
           Navigator.pop(context, item);
           break;
       }
+      lastNavigationType = queRoute.type;
       return false;
     } else {
       return true;

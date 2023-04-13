@@ -662,7 +662,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.3.3"
+    version: "0.3.4"
   scroll_to_index:
     dependency: transitive
     description:
