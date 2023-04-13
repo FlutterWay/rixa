@@ -92,4 +92,8 @@
 * Web window title added
 * Rixa.cropImage, Rixa.openDialog, Rixa.pickFile added
 * Documentation updated
+  
+## 0.3.1
+
+* goToPreviousPage has been optimized
 

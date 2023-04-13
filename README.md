@@ -396,7 +396,7 @@ for more information: [#111842](https://github.com/flutter/flutter/issues/111842
 
 ### Common Issue Fixed - Back Button Problem on Mobile App
 
-If you run your application on a platform other than the web and use context.go(), Android&Ios back button or Navigator.pop() will not functions as wanted and go to the previous page. You can use goToPreviousPage instead of Navigator.pop(). If you are using go() or goNamed() for navigation, add onWillPop to your scaffold then add this function. 
+If you run your application on a platform other than the web and use context.go(), Android&Ios back button or Navigator.pop() will not functions as wanted and go to the previous page. You can use context.goToPreviousPage instead of Navigator.pop(). To fix the back button issue(Mobile/Desktop) add onWillPop to your scaffold then add this function. 
 
 [Check the codes](#gotopreviouspage)
 
@@ -494,7 +494,9 @@ for more information: [Flutter Navigation with GoRouter: Go vs Push](https://cod
 
 ### goToPreviousPage
 
-If you run your application on a platform other than the web and use context.go(), Navigator.pop() will not go to the previous page. You can use goToPreviousPage instead of Navigator.pop(). If you are using go() or goNamed() for navigation, add onWillPop to your scaffold and add this function. 
+If you run your application on a platform other than the web and use context.go(), otherwise Navigator.pop() will not go to the previous page. You can use goToPreviousPage instead of Navigator.pop(). To fix the back button issue(Mobile/Desktop) add onWillPop to your scaffold then add this function.
+
+How it works: There's a stack of pages where previous pages are kept. If go() or goNamed() is called on the previous page, go() is used to go to the previous page. If context.push() is used, it pops to the previous page.
 
 ```dart
    WillPopScope(

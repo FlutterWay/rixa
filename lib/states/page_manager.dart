@@ -11,12 +11,13 @@ import 'package:rixa/models/route_properties.dart';
 import 'package:rixa/rixa.dart';
 import 'package:go_router/go_router.dart';
 import '../models/font_size.dart';
+import '../models/que_route.dart';
 
 class PageManager extends GetxController {
   List<PageBase> _pages = [];
   RixaPage? _mainPage;
   RixaPage? _currentPage;
-  List<RouteProperties> pageQue = [];
+  List<QueRoute> pageQue = [];
   UnknownRoutePage? _unknownRoutePage;
   late ScreenModeLimits defaultLimits;
   Map<String, dynamic>? _deliveringItem;
@@ -364,7 +365,7 @@ class PageManager extends GetxController {
   }) async {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(_route!);
+      pageQue.add(QueRoute(route: _route!.route!, type: NavigationType.go));
       if (quickDispose != null) {
         await quickDispose();
       }
@@ -384,7 +385,7 @@ class PageManager extends GetxController {
   }) async {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(_route!);
+      pageQue.add(QueRoute(route: _route!.route!, type: NavigationType.go));
       if (quickDispose != null) {
         await quickDispose();
       }
@@ -404,7 +405,7 @@ class PageManager extends GetxController {
   }) async {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(_route!);
+      pageQue.add(QueRoute(route: _route!.route!, type: NavigationType.push));
       await GoRouter.of(context).push(route);
       if (onPop != null) onPop();
     }
@@ -418,7 +419,7 @@ class PageManager extends GetxController {
   }) async {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(_route!);
+      pageQue.add(QueRoute(route: _route!.route!, type: NavigationType.push));
       await GoRouter.of(context).pushNamed(name);
       if (onPop != null) onPop();
     }
@@ -431,7 +432,8 @@ class PageManager extends GetxController {
   }) {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(_route!);
+      pageQue.add(QueRoute(
+          route: _route!.route!, type: NavigationType.pushReplacement));
       GoRouter.of(context).pushReplacement(route);
     }
   }
@@ -443,7 +445,8 @@ class PageManager extends GetxController {
   }) {
     if (_route != null) {
       _deliveringItem = item;
-      pageQue.add(_route!);
+      pageQue.add(QueRoute(
+          route: _route!.route!, type: NavigationType.pushReplacement));
       GoRouter.of(context).pushReplacementNamed(name);
     }
   }
@@ -462,8 +465,18 @@ class PageManager extends GetxController {
       dynamic Function()? quickDispose}) async {
     if (pageQue.isNotEmpty) {
       _deliveringItem = item;
-      _route = pageQue.removeLast();
-      GoRouter.of(context).go(_route!.route!);
+      QueRoute queRoute = pageQue.removeLast();
+      switch (queRoute.type) {
+        case NavigationType.go:
+          GoRouter.of(context).go(queRoute.route);
+          break;
+        case NavigationType.push:
+          GoRouter.of(context).pop(item);
+          break;
+        case NavigationType.pushReplacement:
+          GoRouter.of(context).pop(item);
+          break;
+      }
       return false;
     } else {
       return true;
