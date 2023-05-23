@@ -1,7 +1,6 @@
 name: rixa
 description: Creating the application skeleton could be tough and time taking. Rixa is the easiest and simplest way to design your application
 version: 0.3.5
-publish_to: none
 homepage: https://github.com/FlutterWay/rixa
 
 environment:
@@ -20,8 +19,6 @@ dependencies:
   boxicons: ^2.1.3
   markdown: ^7.0.2
   html: ^0.15.2
-  liquid_progress_indicator:
-    git: https://github.com/varun-2001/liquid_progress_indicator.git
   bubble_tab_indicator: ^0.1.6
   flick_video_player: ^0.5.0
   extended_image: ^8.0.1

@@ -72,12 +72,10 @@ class RixaMaterial extends StatefulWidget {
     this.actions,
     this.restorationScopeId,
     this.scrollBehavior,
-    @Deprecated(
-      'Remove this parameter as it is now ignored. '
-      'MaterialApp never introduces its own MediaQuery; the View widget takes care of that. '
-      'This feature was deprecated after v3.7.0-29.0.pre.'
-    )
-    this.useInheritedMediaQuery = false,
+    @Deprecated('Remove this parameter as it is now ignored. '
+        'MaterialApp never introduces its own MediaQuery; the View widget takes care of that. '
+        'This feature was deprecated after v3.7.0-29.0.pre.')
+        this.useInheritedMediaQuery = false,
   }) : super(key: key);
 
   @override
@@ -118,7 +116,8 @@ class _RixaMaterialState extends State<RixaMaterial> {
                             context,
                             RouteProperties(
                                 route: paramsConverter(
-                                    path: page.route, params: state.pathParameters),
+                                    path: page.route,
+                                    params: state.pathParameters),
                                 name: page.name,
                                 params: state.pathParameters))
                         : Material(
@@ -200,7 +199,9 @@ class _RixaMaterialState extends State<RixaMaterial> {
         ],
         errorPageBuilder: (context, state) {
           Get.find<PageManager>().initErrorPage(
-              route: state.location, params: state.pathParameters, context: context);
+              route: state.location,
+              params: state.pathParameters,
+              context: context);
           return CustomTransitionPage<void>(
             key: state.pageKey,
             child: Get.find<PageManager>().unknownRoutePage?.pageView ??
@@ -444,7 +445,8 @@ class _RixaMaterialState extends State<RixaMaterial> {
                     params: state.pathParameters,
                     context: context,
                     route: paramsConverter(
-                        path: route + child.route, params: state.pathParameters),
+                        path: route + child.route,
+                        params: state.pathParameters),
                     mainPage: main ?? child,
                     currentPage: child);
               }
@@ -496,8 +498,8 @@ class _RixaMaterialState extends State<RixaMaterial> {
                   ? nestedChildPage.route
                   : nestedChildPage.route.replaceFirst("/", ""),
               name: nestedChildPage.name,
-              redirect: (context, state) =>
-                  nestedChildPage.redirectRoute(state.pathParameters, state.location),
+              redirect: (context, state) => nestedChildPage.redirectRoute(
+                  state.pathParameters, state.location),
               pageBuilder: (context, state) {
                 if (state.location.split("/").length ==
                     nestedChildPage.fullRoute.split("/").length) {
