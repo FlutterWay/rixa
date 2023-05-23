@@ -3,7 +3,7 @@ import 'package:rixa/rixa.dart';
 import '../../main.dart';
 import '../../texts/app_text.dart';
 
-class MyAppbar extends StatelessWidget with PreferredSizeWidget {
+class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
   const MyAppbar({Key? key}) : super(key: key);
 
   @override

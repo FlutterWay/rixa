@@ -4,10 +4,10 @@ import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter/material.dart';
 
 class VideoPlayerDesktop extends StatefulWidget {
-  final String path;
+  final String? filePath, url, asset;
   final double? width, height;
   const VideoPlayerDesktop(
-      {Key? key, required this.path, this.width, this.height})
+      {Key? key, this.filePath, this.url, this.asset, this.width, this.height})
       : super(key: key);
 
   @override
@@ -19,7 +19,11 @@ class _VideoPlayerDesktopState extends State<VideoPlayerDesktop> {
   _VideoPlayerDesktopState() {
     player = Player(id: 69420);
     player.open(
-      Media.file(File(widget.path)),
+      widget.filePath != null
+          ? Media.file(File(widget.filePath!))
+          : widget.url != null
+              ? Media.network(widget.url)
+              : Media.asset(widget.asset!),
       autoStart: false, // default
     );
   }

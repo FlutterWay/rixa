@@ -4,12 +4,11 @@ import 'package:flick_video_player/flick_video_player.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPlayerMobile extends StatefulWidget {
-  final String path;
+  final String? filePath, url, asset;
   final double? width, height;
   const VideoPlayerMobile(
-      {Key? key, required this.path, this.width, this.height})
+      {Key? key, this.filePath, this.url, this.asset, this.width, this.height})
       : super(key: key);
-
   @override
   State<VideoPlayerMobile> createState() => _VideoPlayerMobileState();
 }
@@ -18,7 +17,11 @@ class _VideoPlayerMobileState extends State<VideoPlayerMobile> {
   late FlickManager flickManager;
   _VideoPlayerMobileState() {
     flickManager = FlickManager(
-        videoPlayerController: VideoPlayerController.file(File(widget.path)),
+        videoPlayerController: widget.filePath != null
+            ? VideoPlayerController.file(File(widget.filePath!))
+            : widget.url != null
+                ? VideoPlayerController.network(widget.url!)
+                : VideoPlayerController.asset(widget.asset!),
         autoPlay: false);
   }
 

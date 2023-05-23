@@ -30,7 +30,7 @@ class RixaProperties {
       _screenMode == ScreenMode.landScape;
 
   bool get isMobile => _deviceType == DeviceType.mobile;
-  bool get isLandscaped => _deviceType == ScreenMode.landScape;
+  bool get isLandscaped => _screenMode == ScreenMode.landScape;
   bool get isDesktop => _deviceType == DeviceType.desktop;
   bool get isWeb => kIsWeb;
   ScreenMode get screenMode => _screenMode;

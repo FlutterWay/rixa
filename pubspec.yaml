@@ -1,10 +1,11 @@
 name: rixa
 description: Creating the application skeleton could be tough and time taking. Rixa is the easiest and simplest way to design your application
-version: 0.3.4
+version: 0.3.5
+publish_to: none
 homepage: https://github.com/FlutterWay/rixa
 
 environment:
-  sdk: ">=2.17.1 <3.0.0"
+  sdk: ">=2.17.1 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -19,13 +20,14 @@ dependencies:
   boxicons: ^2.1.3
   markdown: ^7.0.2
   html: ^0.15.2
-  liquid_progress_indicator: ^0.4.0
+  liquid_progress_indicator:
+    git: https://github.com/varun-2001/liquid_progress_indicator.git
   bubble_tab_indicator: ^0.1.6
   flick_video_player: ^0.5.0
-  extended_image: ^7.0.2
+  extended_image: ^8.0.1
   dart_vlc: ^0.4.0
   google_fonts: ^4.0.3
-  go_router: ^6.5.5
+  go_router: ^7.1.1
   flutter_persistent_keyboard_height: ^1.0.5
   flutter_keyboard_size: ^1.0.1
   provider: ^6.0.5
@@ -35,7 +37,7 @@ dependencies:
   flutter_emoji_gif_picker: ^0.1.3
   file_picker: ^5.2.7
   markdown_widget: ^2.1.0
-  flutter_math_fork: ^0.6.3+1
+  flutter_math_fork: ^0.7.1
 
 dev_dependencies:
   flutter_test:

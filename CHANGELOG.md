@@ -108,4 +108,11 @@
 ## 0.3.4
 
 * goToPreviousPage has been optimized
+  
+## 0.3.5
+
+* Dart 3 & Flutter 3.10 compatibility
+* Fixed issue that caused rixa not to support for desktop 
+* RixaPlayer is not working on Mobile for now, We will fix it soon
+* Fixed RixaProperties.isLandscaped not working properly
 

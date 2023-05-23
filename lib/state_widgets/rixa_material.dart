@@ -72,6 +72,11 @@ class RixaMaterial extends StatefulWidget {
     this.actions,
     this.restorationScopeId,
     this.scrollBehavior,
+    @Deprecated(
+      'Remove this parameter as it is now ignored. '
+      'MaterialApp never introduces its own MediaQuery; the View widget takes care of that. '
+      'This feature was deprecated after v3.7.0-29.0.pre.'
+    )
     this.useInheritedMediaQuery = false,
   }) : super(key: key);
 
@@ -94,15 +99,15 @@ class _RixaMaterialState extends State<RixaMaterial> {
                 path: page.route,
                 name: page.name,
                 redirect: (context, state) =>
-                    page.redirectRoute(state.params, state.location),
+                    page.redirectRoute(state.pathParameters, state.location),
                 pageBuilder: (context, state) {
                   if (state.location.split("/").length ==
                       page.fullRoute.split("/").length) {
                     Get.find<PageManager>().initRoute(
-                        params: state.params,
+                        params: state.pathParameters,
                         context: context,
                         route: paramsConverter(
-                            path: page.route, params: state.params),
+                            path: page.route, params: state.pathParameters),
                         mainPage: page,
                         currentPage: page);
                   }
@@ -113,9 +118,9 @@ class _RixaMaterialState extends State<RixaMaterial> {
                             context,
                             RouteProperties(
                                 route: paramsConverter(
-                                    path: page.route, params: state.params),
+                                    path: page.route, params: state.pathParameters),
                                 name: page.name,
-                                params: state.params))
+                                params: state.pathParameters))
                         : Material(
                             child: Placeholder(
                               child: Center(
@@ -143,16 +148,16 @@ class _RixaMaterialState extends State<RixaMaterial> {
                   path: nestedChildPage.route,
                   name: nestedChildPage.name,
                   redirect: (context, state) => nestedChildPage.redirectRoute(
-                      state.params, state.location),
+                      state.pathParameters, state.location),
                   pageBuilder: (context, state) {
                     if (state.location.split("/").length ==
                         nestedChildPage.fullRoute.split("/").length) {
                       Get.find<PageManager>().initRoute(
-                          params: state.params,
+                          params: state.pathParameters,
                           context: context,
                           route: paramsConverter(
                               path: nestedChildPage.route,
-                              params: state.params),
+                              params: state.pathParameters),
                           mainPage: nestedChildPage,
                           currentPage: nestedChildPage);
                     }
@@ -195,7 +200,7 @@ class _RixaMaterialState extends State<RixaMaterial> {
         ],
         errorPageBuilder: (context, state) {
           Get.find<PageManager>().initErrorPage(
-              route: state.location, params: state.params, context: context);
+              route: state.location, params: state.pathParameters, context: context);
           return CustomTransitionPage<void>(
             key: state.pageKey,
             child: Get.find<PageManager>().unknownRoutePage?.pageView ??
@@ -230,15 +235,15 @@ class _RixaMaterialState extends State<RixaMaterial> {
       //          path: page.route,
       //          name: page.name,
       //          redirect: (context, state) =>
-      //              page.redirectRoute(state.params, state.location),
+      //              page.redirectRoute(state.pathParameters, state.location),
       //          pageBuilder: (context, state) {
       //            if (state.location.split("/").length ==
       //                page.fullRoute.split("/").length) {
       //              Get.find<PageManager>().initRoute(
-      //                  params: state.params,
+      //                  params: state.pathParameters,
       //                  context: context,
       //                  route: paramsConverter(
-      //                      path: page.route, params: state.params),
+      //                      path: page.route, params: state.pathParameters),
       //                  mainPage: page,
       //                  currentPage: page);
       //            }
@@ -249,9 +254,9 @@ class _RixaMaterialState extends State<RixaMaterial> {
       //                      context,
       //                      RouteProperties(
       //                          route: paramsConverter(
-      //                              path: page.route, params: state.params),
+      //                              path: page.route, params: state.pathParameters),
       //                          name: page.name,
-      //                          params: state.params))
+      //                          params: state.pathParameters))
       //                  : Material(
       //                      child: Placeholder(
       //                        child: Center(
@@ -277,7 +282,7 @@ class _RixaMaterialState extends State<RixaMaterial> {
       //                RouteProperties(
       //                    route: state.location,
       //                    name: "",
-      //                    params: state.params),
+      //                    params: state.pathParameters),
       //                widget);
       //          },
       //          routes:
@@ -286,7 +291,7 @@ class _RixaMaterialState extends State<RixaMaterial> {
       //  ],
       //  errorPageBuilder: (context, state) {
       //    Get.find<PageManager>()
-      //        .initErrorPage(route: state.location, params: state.params);
+      //        .initErrorPage(route: state.location, params: state.pathParameters);
       //    return CustomTransitionPage<void>(
       //      key: state.pageKey,
       //      child: Get.find<PageManager>().unknownRoutePage ??
@@ -430,16 +435,16 @@ class _RixaMaterialState extends State<RixaMaterial> {
                 main == null ? child.route : child.route.replaceFirst("/", ""),
             name: child.name,
             redirect: (context, state) =>
-                child.redirectRoute(state.params, state.location),
+                child.redirectRoute(state.pathParameters, state.location),
             pageBuilder: (context, state) {
               NestedPage? nestedPage = child.firstNestedParent;
               if (state.location.split("/").length ==
                   child.fullRoute.split("/").length) {
                 Get.find<PageManager>().initRoute(
-                    params: state.params,
+                    params: state.pathParameters,
                     context: context,
                     route: paramsConverter(
-                        path: route + child.route, params: state.params),
+                        path: route + child.route, params: state.pathParameters),
                     mainPage: main ?? child,
                     currentPage: child);
               }
@@ -457,9 +462,9 @@ class _RixaMaterialState extends State<RixaMaterial> {
                             RouteProperties(
                                 route: paramsConverter(
                                     path: route + child.route,
-                                    params: state.params),
+                                    params: state.pathParameters),
                                 name: child.name,
-                                params: state.params))
+                                params: state.pathParameters))
                         : Material(
                             child: Placeholder(
                               child: Center(
@@ -492,16 +497,16 @@ class _RixaMaterialState extends State<RixaMaterial> {
                   : nestedChildPage.route.replaceFirst("/", ""),
               name: nestedChildPage.name,
               redirect: (context, state) =>
-                  nestedChildPage.redirectRoute(state.params, state.location),
+                  nestedChildPage.redirectRoute(state.pathParameters, state.location),
               pageBuilder: (context, state) {
                 if (state.location.split("/").length ==
                     nestedChildPage.fullRoute.split("/").length) {
                   Get.find<PageManager>().initRoute(
-                      params: state.params,
+                      params: state.pathParameters,
                       context: context,
                       route: paramsConverter(
                           path: route + nestedChildPage.route,
-                          params: state.params),
+                          params: state.pathParameters),
                       mainPage: main ?? nestedChildPage,
                       currentPage: nestedChildPage);
                 }
@@ -588,6 +593,7 @@ class _RixaMaterialState extends State<RixaMaterial> {
       actions: widget.actions,
       restorationScopeId: widget.restorationScopeId,
       scrollBehavior: widget.scrollBehavior,
+      // ignore: deprecated_member_use
       useInheritedMediaQuery: widget.useInheritedMediaQuery,
     );
     //if (kIsWeb) {
