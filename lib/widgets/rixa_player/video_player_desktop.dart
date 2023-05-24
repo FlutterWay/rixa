@@ -3,6 +3,20 @@ import 'dart:io';
 import 'package:dart_vlc/dart_vlc.dart';
 import 'package:flutter/material.dart';
 
+Widget getPlayer(
+        {String? filePath,
+        String? url,
+        String? asset,
+        double? width,
+        double? height}) =>
+    VideoPlayerDesktop(
+      filePath: filePath,
+      url: url,
+      asset: asset,
+      width: width,
+      height: height,
+    );
+
 class VideoPlayerDesktop extends StatefulWidget {
   final String? filePath, url, asset;
   final double? width, height;

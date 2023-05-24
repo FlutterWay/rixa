@@ -76,6 +76,7 @@ export 'widgets/profile_avatar.dart';
 export 'widgets/radio_button_list.dart';
 export 'widgets/region_bar.dart';
 export 'widgets/rixa_textfield.dart';
+export 'widgets/rixa_player/rixa_player.dart';
 export 'widgets/sized_button.dart';
 export 'widgets/textfield_chat.dart';
 export 'widgets/markdown/markdown_widget.dart';

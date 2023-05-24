@@ -115,4 +115,8 @@
 * Fixed issue that caused rixa not to support for desktop 
 * RixaPlayer is not working on Mobile for now, We will fix it soon
 * Fixed RixaProperties.isLandscaped not working properly
+  
+## 0.3.6
+
+* Fixed platform support issue
 

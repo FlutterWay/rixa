@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:rixa/rixa.dart';
-import 'video_player_desktop.dart';
-//import 'video_player_mobile.dart';
+import 'video_player.dart' //
+    if (dart.library.io) 'video_player_desktop.dart'
+    if (dart.library.html) 'video_player_mobile.dart';
 
 class RixaPlayer extends StatelessWidget {
   final String? filePath, url, asset;
@@ -35,20 +36,11 @@ class RixaPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Rixa.properties.isDesktop
-        ? VideoPlayerDesktop(
-            filePath: filePath,
-            url: url,
-            asset: asset,
-            width: width,
-            height: height)
-        : SizedBox(width: width, height: height);
-
-    //VideoPlayerMobile(
-    //    filePath: filePath,
-    //    url: url,
-    //    asset: asset,
-    //    width: width,
-    //    height: height);
+    return getPlayer(
+        filePath: filePath,
+        url: url,
+        asset: asset,
+        width: width,
+        height: height);
   }
 }

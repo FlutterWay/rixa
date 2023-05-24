@@ -3,6 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:video_player/video_player.dart';
 
+Widget getPlayer(
+        {String? filePath,
+        String? url,
+        String? asset,
+        double? width,
+        double? height}) =>
+    VideoPlayerMobile(
+      filePath: filePath,
+      url: url,
+      asset: asset,
+      width: width,
+      height: height,
+    );
+
 class VideoPlayerMobile extends StatefulWidget {
   final String? filePath, url, asset;
   final double? width, height;

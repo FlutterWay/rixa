@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:markdown_widget/config/configs.dart';
 import 'package:markdown_widget/widget/span_node.dart';
 import 'package:markdown_widget/widget/widget_visitor.dart';
-import 'package:rixa/widgets/rixa_player.dart';
+import 'package:rixa/widgets/rixa_player/rixa_player.dart';
 
 class VideoNode extends SpanNode {
   final Map<String, String> attribute;

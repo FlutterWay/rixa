@@ -1,6 +1,6 @@
 name: rixa
 description: Creating the application skeleton could be tough and time taking. Rixa is the easiest and simplest way to design your application
-version: 0.3.5
+version: 0.3.6
 homepage: https://github.com/FlutterWay/rixa
 
 environment:
